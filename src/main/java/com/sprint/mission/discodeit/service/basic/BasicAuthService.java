@@ -13,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class BasicAuthService implements AuthService {
 
     private final UserRepository userRepository;
@@ -36,7 +36,7 @@ public class BasicAuthService implements AuthService {
             throw InvalidCredentialsException.wrongPassword();
         }
 
-        log.info("로그인 성공: userid={}, username={}", user.getId(), user.getUsername());
+        log.info("로그인 성공: userId={}, username={}", user.getId(), username);
         return userMapper.toDto(user);
     }
 }

@@ -9,6 +9,7 @@ public class InvalidCredentialsException extends UserException {
     }
 
     public static InvalidCredentialsException wrongPassword() {
-        return new InvalidCredentialsException();
+        InvalidCredentialsException exception = new InvalidCredentialsException();
+        return exception;
     }
-}
+} 

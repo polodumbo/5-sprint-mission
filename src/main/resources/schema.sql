@@ -19,7 +19,7 @@ CREATE TABLE binary_contents
     file_name    VARCHAR(255)             NOT NULL,
     size         BIGINT                   NOT NULL,
     content_type VARCHAR(100)             NOT NULL
---     bytes        bytea                    NOT NULL
+--     ,bytes        bytea        NOT NULL
 );
 
 -- UserStatus
@@ -118,7 +118,7 @@ ALTER TABLE read_statuses
             REFERENCES users (id)
             ON DELETE CASCADE;
 
--- ReadStatus (N) -> Channel (1)
+-- ReadStatus (N) -> User (1)
 ALTER TABLE read_statuses
     ADD CONSTRAINT fk_read_status_channel
         FOREIGN KEY (channel_id)

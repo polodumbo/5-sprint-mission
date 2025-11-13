@@ -31,13 +31,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class BasicMessageService implements MessageService {
 
     private final MessageRepository messageRepository;
-    //
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
     private final MessageMapper messageMapper;
@@ -49,9 +48,7 @@ public class BasicMessageService implements MessageService {
     @Override
     public MessageDto create(MessageCreateRequest messageCreateRequest,
         List<BinaryContentCreateRequest> binaryContentCreateRequests) {
-
         log.debug("메시지 생성 시작: request={}", messageCreateRequest);
-
         UUID channelId = messageCreateRequest.channelId();
         UUID authorId = messageCreateRequest.authorId();
 
@@ -83,8 +80,7 @@ public class BasicMessageService implements MessageService {
         );
 
         messageRepository.save(message);
-
-        log.info("메시지 생성 완료: request={}", message);
+        log.info("메시지 생성 완료: id={}, channelId={}", message.getId(), channelId);
         return messageMapper.toDto(message);
     }
 
@@ -117,14 +113,12 @@ public class BasicMessageService implements MessageService {
     @Transactional
     @Override
     public MessageDto update(UUID messageId, MessageUpdateRequest request) {
-        log.debug("메시지 수정 시작: request={}", request);
-
-        String newContent = request.newContent();
+        log.debug("메시지 수정 시작: id={}, request={}", messageId, request);
         Message message = messageRepository.findById(messageId)
             .orElseThrow(() -> MessageNotFoundException.withId(messageId));
-        message.update(newContent);
 
-        log.info("메시지 수정 완료: request={}", message);
+        message.update(request.newContent());
+        log.info("메시지 수정 완료: id={}, channelId={}", messageId, message.getChannel().getId());
         return messageMapper.toDto(message);
     }
 
@@ -132,11 +126,9 @@ public class BasicMessageService implements MessageService {
     @Override
     public void delete(UUID messageId) {
         log.debug("메시지 삭제 시작: id={}", messageId);
-
         if (!messageRepository.existsById(messageId)) {
             throw MessageNotFoundException.withId(messageId);
         }
-
         messageRepository.deleteById(messageId);
         log.info("메시지 삭제 완료: id={}", messageId);
     }

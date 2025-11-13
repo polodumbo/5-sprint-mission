@@ -22,9 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class BasicChannelService implements ChannelService {
 
     private final ChannelRepository channelRepository;
@@ -37,23 +37,20 @@ public class BasicChannelService implements ChannelService {
     @Transactional
     @Override
     public ChannelDto create(PublicChannelCreateRequest request) {
-        log.debug("공개 채널 생성 시작: request={}", request);
-
+        log.debug("채널 생성 시작: {}", request);
         String name = request.name();
         String description = request.description();
         Channel channel = new Channel(ChannelType.PUBLIC, name, description);
 
         channelRepository.save(channel);
-
-        log.info("공개 채널 생성 완료: request={}", channel);
+        log.info("채널 생성 완료: id={}, name={}", channel.getId(), channel.getName());
         return channelMapper.toDto(channel);
     }
 
     @Transactional
     @Override
     public ChannelDto create(PrivateChannelCreateRequest request) {
-        log.debug("비공개 채널 생성 시작: request={}", request);
-
+        log.debug("채널 생성 시작: {}", request);
         Channel channel = new Channel(ChannelType.PRIVATE, null, null);
         channelRepository.save(channel);
 
@@ -63,7 +60,7 @@ public class BasicChannelService implements ChannelService {
             .toList();
         readStatusRepository.saveAll(readStatuses);
 
-        log.info("비공개 채널 생성 완료: request={}", channel);
+        log.info("채널 생성 완료: id={}, name={}", channel.getId(), channel.getName());
         return channelMapper.toDto(channel);
     }
 
@@ -92,18 +89,16 @@ public class BasicChannelService implements ChannelService {
     @Transactional
     @Override
     public ChannelDto update(UUID channelId, PublicChannelUpdateRequest request) {
-        log.debug("채널 수정 시작: request={}", request);
-
+        log.debug("채널 수정 시작: id={}, request={}", channelId, request);
         String newName = request.newName();
         String newDescription = request.newDescription();
         Channel channel = channelRepository.findById(channelId)
             .orElseThrow(() -> ChannelNotFoundException.withId(channelId));
         if (channel.getType().equals(ChannelType.PRIVATE)) {
-            throw PrivateChannelUpdateException.update(channelId);
+            throw PrivateChannelUpdateException.forChannel(channelId);
         }
         channel.update(newName, newDescription);
-
-        log.info("채널 수정 완료: request={}", channel);
+        log.info("채널 수정 완료: id={}, name={}", channelId, channel.getName());
         return channelMapper.toDto(channel);
     }
 
@@ -111,7 +106,6 @@ public class BasicChannelService implements ChannelService {
     @Override
     public void delete(UUID channelId) {
         log.debug("채널 삭제 시작: id={}", channelId);
-
         if (!channelRepository.existsById(channelId)) {
             throw ChannelNotFoundException.withId(channelId);
         }

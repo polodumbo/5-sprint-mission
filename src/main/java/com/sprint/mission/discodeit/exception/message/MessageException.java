@@ -12,4 +12,4 @@ public class MessageException extends DiscodeitException {
     public MessageException(ErrorCode errorCode, Throwable cause) {
         super(errorCode, cause);
     }
-}
+} 

@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.exception.ReadStatus;
+package com.sprint.mission.discodeit.exception.readstatus;
 
 import com.sprint.mission.discodeit.exception.ErrorCode;
 import java.util.UUID;
@@ -14,4 +14,4 @@ public class ReadStatusNotFoundException extends ReadStatusException {
         exception.addDetail("readStatusId", readStatusId);
         return exception;
     }
-}
+} 

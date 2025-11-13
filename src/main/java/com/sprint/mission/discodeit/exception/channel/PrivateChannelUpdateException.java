@@ -9,9 +9,9 @@ public class PrivateChannelUpdateException extends ChannelException {
         super(ErrorCode.PRIVATE_CHANNEL_UPDATE);
     }
 
-    public static PrivateChannelUpdateException update(UUID channelId) {
+    public static PrivateChannelUpdateException forChannel(UUID channelId) {
         PrivateChannelUpdateException exception = new PrivateChannelUpdateException();
         exception.addDetail("channelId", channelId);
         return exception;
     }
-}
+} 
